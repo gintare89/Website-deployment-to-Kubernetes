@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shop-config
+data:
+  APP_NAME: ecommerce
+  APP_ENV: production
+  APP_DEBUG: "false"
+  APP_URL: {{ .Values.app.url }}
+  LOG_CHANNEL: stack
+  DB_CONNECTION: mysql
+  DB_HOST: mariadb
+  DB_PORT: "3306"
+  DB_DATABASE: {{ .Values.database.db_database }}
+  DB_USERNAME: {{ .Values.database.db_username }}
+
+  BROADCAST_DRIVER: log
+  CACHE_DRIVER: "redis"
+  QUEUE_CONNECTION: "redis"
+  SESSION_DRIVER: "redis"
+  SESSION_LIFETIME: "120"
+
+  PROMETHEUS_NAMESPACE: default
+  PROMETHEUS_METRICS_ROUTE_ENABLED: "true"
+  PROMETHEUS_METRICS_ROUTE_PATH: metrics
+  PROMETHEUS_METRICS_ROUTE_MIDDLEWARE: "null"
+  PROMETHEUS_STORAGE_ADAPTER: "memory"
+  REDIS_HOST: redis-master
+  REDIS_PORT: "6379"
+  REDIS_CLIENT: "predis"
+  PROMETHEUS_REDIS_PREFIX: PROMETHEUS_
+  PROMETHEUS_REDIS_NAME: "ecommerce"
+  PROMETHEUS_REDIS_PREFIX_DYNAMIC: "true"
