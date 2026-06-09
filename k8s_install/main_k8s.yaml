@@ -1,0 +1,10 @@
+---
+- name: Join workers
+  user: cloud-user
+  hosts: k8s_workers_nodes
+  become: true
+  tasks:
+  - name: Join workers to control plane
+    ansible.builtin.command: "{{ hostvars[groups['k8s_master_control'][0]].kube_join_cmd }}"
+    args:
+      creates: /etc/kubernetes/kubelet.conf
