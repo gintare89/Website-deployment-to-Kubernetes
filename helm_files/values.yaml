@@ -1,0 +1,26 @@
+replicaCount: 3
+image:
+  repository: gintare89/ecommerce-laravel
+  pullPolicy: IfNotPresent
+  tag: "monitoring-7"
+service:
+  type: NodePort
+  port: 80
+resources:
+  requests:
+    cpu: "200m"
+    memory: "128Mi"
+  limits:
+    cpu: "500m"
+    memory: "384Mi"
+app:
+  url: http://websiteurl
+database:
+  db_database: ecommerce_laravel
+  db_username: ecommerce_admin
+grafana_conf:
+  grafana_url: http://grafanaurl
+secrets: 
+  appkey: generated_app_Key
+  dbpassword: database_password
+  redispass: redis_password
