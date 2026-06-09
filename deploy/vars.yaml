@@ -1,0 +1,4 @@
+mariadb_root_pass: db_root_pass
+mariadb_pass: database_password
+redis_pass: redis_password
+home_dir: /path/to/helm/folder
