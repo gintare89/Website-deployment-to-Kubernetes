@@ -1,4 +1,4 @@
-Playbooks deploy kubernetes cluster with control plane and two worker nodes.
+Playbooks to deploy kubernetes cluster with control plane and two worker nodes.
 
 ---------------
 1. Playbook krnl_tasks.yaml
