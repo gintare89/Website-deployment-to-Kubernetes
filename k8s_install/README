@@ -1,0 +1,22 @@
+Playbooks deploy kubernetes cluster with control plane and two worker nodes.
+
+---------------
+1. Playbook krnl_tasks.yaml
+   - installs kubernetes and its components
+   - loads kernel module and configures parameters
+   - enables kubelet
+
+
+2. Playbook master_k8s.yaml
+   - launch Kubernetes control plane
+   - installs Calico
+   - configures kubectl
+
+3. Playbook main_k8s.yaml
+   - joins worker nodes to cluster
+
+------------
+These playbooks should be executed at once with run_playbooks.yaml.
+krnl_tasks runs on all hosts.
+master_k8s.yaml runs only on kubernetes control plane server.
+main_k8s.yaml runs on both worker servers.
