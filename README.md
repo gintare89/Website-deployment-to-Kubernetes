@@ -16,4 +16,3 @@ cp -r /your/path/helm_files/* /new/path/website/
 9. Check if website pods working
 kubectl get pods -n ecommerce
 
-<img width="1144" height="913" alt="kuberneteskubernetesdrawio" src="https://github.com/user-attachments/assets/d5f714c3-c766-43a1-b05a-3d6f3b5e1dbf" />
