@@ -1,0 +1,2 @@
+kube_dir_path: /home/path/.kube
+k8_project_dir: home/path/k8s_install
