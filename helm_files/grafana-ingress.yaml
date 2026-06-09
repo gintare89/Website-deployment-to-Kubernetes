@@ -1,0 +1,23 @@
+grafana:
+  resources:
+    requests:
+      cpu: 200m
+      memory: 112Mi
+    limits:
+      cpu: 300m
+      memory: 316Mi
+  grafana.ini:
+    server:
+      root_url: {{ .Values.grafana_conf.grafana_url }}
+      serve_from_sub_path: false
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    hosts:
+      - ""
+    path: /
+    pathType: Prefix
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-buffering: "off"
