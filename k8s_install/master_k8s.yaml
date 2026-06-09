@@ -1,0 +1,119 @@
+---
+- user: cloud-user
+  become: true
+  hosts: k8s_all
+  tasks:
+    - name: Add docker repository
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+        mode: '0644'
+
+
+    - name: Install packages
+      ansible.builtin.yum:
+        name:
+          - yum-utils
+          - ca-certificates
+          - containerd.io
+        state: present
+
+    - name: Set selinux to permissive
+      ansible.posix.selinux:
+        policy: targeted
+        state: permissive
+
+    - name: remove containerd congifuration file
+      ansible.builtin.file:
+        path: /etc/containerd/config.toml
+        state: absent
+
+    - name: generate default containerd configuration
+      ansible.builtin.shell: containerd config default > /etc/containerd/config.toml
+
+
+    - name: Enable SystemdcGorup in containerd
+      ansible.builtin.lineinfile:
+        path: /etc/containerd/config.toml
+        regexp: '(\s+)SystemdCgroup = false'
+        line: '\1SystemdCgroup = true'
+        backrefs: yes
+
+    - name: Start containerd
+      ansible.builtin.service:
+        name: containerd
+        state: restarted
+        enabled: yes
+
+    - name: Turn off swap
+      ansible.builtin.command: swapoff -a
+
+    - name: Remove swap
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^.*swap.*$'
+        replace: ''
+
+    - name: Load br_netfilter
+      community.general.modprobe:
+        name: br_netfilter
+        state: present
+
+    - name: Use kernel modules after reboot
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/kubernetes.conf
+        content: |
+          br_netfilter
+        mode: '0644'
+
+    - name: Set network parameters
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: "1"
+        state: present
+        reload: true
+
+
+    - name: Set ip6 parameters
+      ansible.posix.sysctl:
+        name: net.bridge.bridge-nf-call-ip6tables
+        value: "1"
+        state: present
+        reload: true
+
+
+    - name: Set iptables parameters
+      ansible.posix.sysctl:
+        name: net.bridge.bridge-nf-call-iptables
+        value: "1"
+        state: present
+        reload: true
+
+
+    - name: Install Kubernetes
+      ansible.builtin.yum_repository:
+        name: Kubernetes
+        description: Kubernetes install
+        baseurl: https://pkgs.k8s.io/core:/stable:/v1.28/rpm/
+        gpgcheck: 1
+        repo_gpgcheck: 1
+        gpgkey: https://pkgs.k8s.io/core:/stable:/v1.28/rpm/repodata/repomd.xml.key
+
+    - name: Install Kubernetes packages
+      ansible.builtin.yum:
+        name:
+          - kubelet
+          - kubectl
+          - kubeadm
+        state: present
+
+    - name: Set hostname
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}"
+
+
+    - name: Enable kubelet
+      ansible.builtin.service:
+        name: kubelet
+        enabled: yes
+        state: started
