@@ -1,0 +1,4 @@
+---
+- import_playbook: master_k8s.yaml
+- import_playbook: krnl_tasks.yaml
+- import_playbook: main_k8s.yaml
